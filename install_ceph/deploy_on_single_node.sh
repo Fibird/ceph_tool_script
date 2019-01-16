@@ -20,8 +20,8 @@ echo "$ipadd $node_name" >> /etc/hosts
 ssh-keygen -t rsa
 ssh-copy-id root@$node_name
 
-mkdir ceph-cluster
-cd ceph-cluster
+mkdir ~/ceph-cluster
+cd ~/ceph-cluster
 
 # install necessary software
 yum install tree nmap sysstat lrzsz dos2unix wegt git net-tools -y
