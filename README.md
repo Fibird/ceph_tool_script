@@ -57,3 +57,40 @@ osd.3   30      34      | 64
 --------------------------------
 SUM :   500     500     |
 ```
+
+# primary pg tuner
+
+```
+$ cd osd_tools
+$ ./primary_pg_tuner.sh
+```
+
+You can get these:
+
+```
+set osd.5 primary-affinity to 0.98 (8642252)
+5
+set osd.6 primary-affinity to 1 (8655362)
+6
+set osd.7 primary-affinity to 1 (8655362)
+7
+set osd.8 primary-affinity to 0.79993 (8524242)
+8
+set osd.9 primary-affinity to 0.78997 (8517712)
+9
+set osd.10 primary-affinity to 1 (8655362)
+10
+set osd.11 primary-affinity to 0.87997 (8576692)
+11
+set osd.12 primary-affinity to 0.94996 (8622562)
+12
+set osd.13 primary-affinity to 0.80994 (8530802)
+13
+set osd.14 primary-affinity to 0.98 (8642252)
+14
+max:36
+min:29
+deviation:1.40
+average:33
+sum:500
+```

@@ -12,15 +12,15 @@
 
 # Get primary pg number
 
-if [[ $# -ne 1 ]]
+if [[ $# -ne 2 ]]
 then
-  echo "Please specify pool id!"
+  echo "Please specify pool id and iteration times!"
   exit 1
 fi
 
 pool_id=$1
-
-iter_times=20
+set_dev=2
+iter_times=$2
 
 # get osd list
 osd_list=($(ceph osd ls))
@@ -105,9 +105,10 @@ END {
 	average=$[sum/count]
 }
 
-for (( j=0; j<10; j++ )); do
+for (( j=0; j<$iter_times; j++ )); do
 	get_pri_pgs
 	counter=0
+	diff_sum=0
 	for i in ${pri_pgs_by_osd[@]}; do
 		if [[ $counter -eq $count ]]; then
 			break
@@ -127,8 +128,14 @@ for (( j=0; j<10; j++ )); do
 		fi
 		osd_pri_aff[pri_pgs_by_osd[$[counter+count+1]]]=$tmp_aff
 		let counter++
+		diff=$(echo "ibase=10; scale=2; $i-$average" | bc)
+		abs_diff=$(echo $diff | awk ' { if($1>=0) { print $1} else {print $1*-1 }}')
+		diff_sum=$(echo "ibase=10; scale=2; $diff_sum+$abs_diff" | bc)
 	done
-	
+	deviation=$(echo "ibase=10; scale=2; $diff_sum/$count" | bc)
+	if [[ $(echo "$deviation<$set_dev") = 1 ]]; then
+		break
+	fi
 	# adjust osd primary affinity
 	for i in ${osd_list[@]}; do
 		ceph osd primary-affinity $i ${osd_pri_aff[i]}
@@ -138,7 +145,8 @@ done
 
 echo "max:$max"
 echo "min:$min"
+echo "deviation:$deviation"
 echo "average:$average"
 echo "sum:$sum"
-echo "count:$count"
-echo ${osd_pri_aff[@]}
+#echo "count:$count"
+#echo ${osd_pri_aff[@]}
