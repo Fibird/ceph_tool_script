@@ -7,7 +7,7 @@ then
 fi
 
 ip_seg=$1
-node_name=ceph-master
+node_name=`hostname`
 ipadd=$(ip route get 8.8.8.8 | awk '/8.8.8.8/ {print $NF}')
 
 # backup hosts file
