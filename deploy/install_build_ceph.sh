@@ -17,6 +17,8 @@ SYSTEMD_USR_DIR="/usr/lib/systemd/system"
 
 # get ceph source path
 CEPH_SOURCE_PATH="/root/gitReps/ceph"
+cd $CEPH_SOURCE_PATH/build
+make install
 
 # remove all osds
 for pid in $(ps -ef | grep osd | awk '{print $2}'); do
@@ -41,11 +43,11 @@ ipadd=$(ip route get 8.8.8.8 | awk '/8.8.8.8/ {print $NF}')
 ceph_cluster_fsid=$(uuidgen)
 
 # your hostname to install ceph all-in-one. You can use localhost
-#host_name=$(hostname)
-host_name=ceph_master
+host_name=$(hostname)
+#host_name=ceph_master
 
 # set cluster name
-cluster_name=ceph
+cluster_name=$(hostname)
 
 # Monitor list. You can install multiple monitors on single node, at least 3.
 # Use space, and only space to separate multiple monitors. Don't omit double quotes.
