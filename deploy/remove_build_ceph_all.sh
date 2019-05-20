@@ -4,7 +4,7 @@
 # **Note:** This script must be run by root
 # 2019-05-13 15:22
 
-osd_list=($(ceph osd ls))
+#osd_list=($(ceph osd ls))
 
 # current user must be root
 if [[ $(whoami) != "root" ]]
@@ -39,8 +39,8 @@ for pid in $(ps -ef | grep ceph | awk '{print $2}'); do
      fi
 done
 
-cd $CEPH_SOURCE_PATH/build
-make uninstall
+#cd $CEPH_SOURCE_PATH/build
+#make uninstall
 
 \rm -rf /etc/ceph/
 \rm -rf /var/lib/ceph/

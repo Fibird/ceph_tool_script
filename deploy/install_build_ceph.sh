@@ -17,8 +17,8 @@ SYSTEMD_USR_DIR="/usr/lib/systemd/system"
 
 # get ceph source path
 CEPH_SOURCE_PATH="/root/gitReps/ceph"
-cd $CEPH_SOURCE_PATH/build
-make install
+#cd $CEPH_SOURCE_PATH/build
+#make install
 
 # remove all osds
 for pid in $(ps -ef | grep osd | awk '{print $2}'); do
@@ -47,7 +47,8 @@ host_name=$(hostname)
 #host_name=ceph_master
 
 # set cluster name
-cluster_name=$(hostname)
+#cluster_name=$(hostname)
+cluster_name=ceph
 
 # Monitor list. You can install multiple monitors on single node, at least 3.
 # Use space, and only space to separate multiple monitors. Don't omit double quotes.
@@ -76,7 +77,7 @@ echo "osd pool default size = 3" >> .ceph.conf.tmp
 echo "osd pool default min size = 2" >> .ceph.conf.tmp
 echo "osd pool default pg num = 333" >> .ceph.conf.tmp
 echo "osd pool default pgp num = 333" >> .ceph.conf.tmp
-echo "osd crush chooseleaf type = 1" >> .ceph.conf.tmp 
+#echo "osd crush chooseleaf type = 1" >> .ceph.conf.tmp 
 # monitor initial setting
 echo "[mon]" >> .ceph.conf.tmp
 echo "mon_clock_drift_allowed = 0.5" >> .ceph.conf.tmp
@@ -157,10 +158,16 @@ mkdir $SYSTEMD_ETC_DIR/ceph.target.wants
 \cp $CEPH_SOURCE_PATH/systemd/ceph-osd.target $SYSTEMD_ETC_DIR/ceph.target.wants/ceph-osd.target
 \cp $CEPH_SOURCE_PATH/systemd/ceph-radosgw.target $SYSTEMD_ETC_DIR/ceph.target.wants/ceph-radosgw.target
 
+echo "======OSD INFO======" > /etc/ceph/ceph_osd.info
+
 systemctl daemon-reload
 ceph-mon -i $host_name --cluster $cluster_name
 # start monitor
 #systemctl start ceph-mon@$cluster_name
+
+# add host to crush map
+ceph osd crush add-bucket $host_name host
+ceph osd crush move $host_name root=default
 
 # clean tmporary files
 # use absolute 'rm' command instead of aliased(only valid on root)

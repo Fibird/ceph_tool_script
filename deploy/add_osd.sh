@@ -39,11 +39,11 @@ fi
 # get host name
 host_name=$(hostname)
 # set cluster name by host name
-cluster_name=$(hostname)
+cluster_name=ceph
 
 # add host to crush map
-ceph osd crush add-bucket $host_name host
-ceph osd crush move $host_name root=default
+#ceph osd crush add-bucket $host_name host
+#ceph osd crush move $host_name root=default
 
 #osd_disk_path_list=/dev/sda1
 
@@ -53,7 +53,7 @@ osd_count=0
 for osd_disk_path in ${osd_disk_path_list[@]}; do
     # get osd id
     osd_id=$(ceph osd create)
-    osd_list[osd_count]=osd_id
+    osd_list[osd_count]=$osd_id
     echo "[INFO: ] Creating osd.$osd_id..."
     # create osd data directory
     osd_data=/var/lib/ceph/osd/ceph-$osd_id
@@ -67,17 +67,20 @@ for osd_disk_path in ${osd_disk_path_list[@]}; do
     # register the OSD authentication key
     ceph auth add osd.$osd_id osd 'allow *' mon 'allow profile osd' -i /var/lib/ceph/osd/ceph-$osd_id/keyring
     # add osd into crush map
-    ceph osd crush add osd.$osd_id 1.00 root=default host=$host_name
+    #ceph osd crush add osd.$osd_id 1.00 root=default host=$host_name
     # start osd
     ceph-osd -i $osd_id --cluster $cluster_name --osd-data /var/lib/ceph/osd/ceph-$osd_id
+    ceph-osd -i $osd_id --cluster $cluster_name --osd-data /var/lib/ceph/osd/ceph-$osd_id
     echo "[INFO: ] osd.$osd_id created successfully."
-    ((osd_num++))
+    ((osd_count++))
 done
 
 echo "Created $osd_num osds:"
-echo "OSD\tDISK\tDATA"
+echo "OSD   DISK   DATA" >> /etc/ceph/ceph_osd.info
 for ((i=0; i < osd_num; i++)) do
-    echo "osd.${osd_list[$i]}\t${osd_disk_path_list[$i]}\t/var/lib/ceph/osd/ceph-${osd_list[$i]}"
+    echo -e "osd.${osd_list[$i]}   ${osd_disk_path_list[$i]}   /var/lib/ceph/osd/ceph-${osd_list[$i]}" >> /etc/ceph/ceph_osd.info
 done
+
+cat /etc/ceph/ceph_osd.info
 
 exit 0
