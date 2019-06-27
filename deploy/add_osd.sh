@@ -39,7 +39,7 @@ fi
 # get host name
 host_name=$(hostname)
 # set cluster name by host name
-cluster_name=$(hostname)
+cluster_name=ceph
 
 # add host to crush map
 ceph osd crush add-bucket $host_name host
@@ -53,7 +53,7 @@ osd_count=0
 for osd_disk_path in ${osd_disk_path_list[@]}; do
     # get osd id
     osd_id=$(ceph osd create)
-    osd_list[osd_count]=osd_id
+    osd_list[osd_count]=$osd_id
     echo "[INFO: ] Creating osd.$osd_id..."
     # create osd data directory
     osd_data=/var/lib/ceph/osd/ceph-$osd_id
@@ -69,6 +69,7 @@ for osd_disk_path in ${osd_disk_path_list[@]}; do
     # add osd into crush map
     ceph osd crush add osd.$osd_id 1.00 root=default host=$host_name
     # start osd
+    ceph-osd -i $osd_id --cluster $cluster_name --osd-data /var/lib/ceph/osd/ceph-$osd_id
     ceph-osd -i $osd_id --cluster $cluster_name --osd-data /var/lib/ceph/osd/ceph-$osd_id
     echo "[INFO: ] osd.$osd_id created successfully."
     ((osd_num++))
