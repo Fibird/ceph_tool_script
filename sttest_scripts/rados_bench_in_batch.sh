@@ -12,9 +12,21 @@ BASEDIR=$(dirname $0)
 #test_time=180
 
 # get from command argument
-shardAndThread=$1
-test_id=$2
-q_result=$3
+shardAndThread=1s1t
+
+if [[ -n $1 ]]; then
+    shardAndThread=$1
+fi
+
+test_id=0
+if [[ -n $2 ]]; then
+    test_id=$2
+fi
+
+q_result=wpq
+if [[ -n $3 ]]; then
+    q_result=$3
+fi
 
 declare -a pids
 echo "block size list: ${block_size_list[@]}"
