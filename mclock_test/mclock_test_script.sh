@@ -5,15 +5,15 @@ BASEDIR=$(dirname $0)
 create_pools=${BASEDIR}/create_pools.sh
 remove_pools=${BASEDIR}/remove_pools.sh
 
-line_num=0
 declare -a pids
 echo "block size list: ${block_size_list[@]}"
 for bs in ${block_size_list[@]}; do
+    line_num=0
     suffix=$(date +%y%m%d%H%M%S)
     iops_rst_file=${BASEDIR}/$result_dir/"$bs"_result_iops_"$suffix".csv
-    echo "id,r,w,l,iops" >> $iops_rst_file
+    echo "id,pool,r,w,l,iops" >> $iops_rst_file
     # read qos setting one by one
-    cat $BASEDIR/qos_configs.csv | while read rwl; do
+    cat $BASEDIR/"$bs"_"$qos_file_name" | while read rwl; do
 	# jump header line
 	# rwl can not be null
 	if [[ "$line_num" -ne 0 ]] && [[ -n "$rwl" ]]; then
@@ -57,12 +57,12 @@ for bs in ${block_size_list[@]}; do
 	        iops=$(grep "Average IOPS" $result_file_name | awk '{print $3}')
 		r_value=${r_list[$i]}
 		w_value=${w_list[$i]}
-		l_value=${w_list[$i]}
-		echo "$qos_id,$r_value,$w_value,$l_value,$iops" >> $iops_rst_file
+		l_value=${l_list[$i]}
+		echo "$qos_id,$pool_name,$r_value,$w_value,$l_value,$iops" >> $iops_rst_file
 	    done
 	    # clean all pools
 	    $remove_pools
-	    echo -e "Sir,\n\n I have finished testing for config $line_num.\n\nTBot\n" | mail -s "mclock test" $info_email
+	    echo -e "Sir,\n\n \t I have finished testing for $bs config $line_num.\n\nTBot\n" | mail -s "mclock test" $info_email
 	fi
 	((line_num++))
     done
