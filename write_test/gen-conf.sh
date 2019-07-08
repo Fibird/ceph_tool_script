@@ -40,7 +40,7 @@ sudo echo -e "filestore xattr use omap = true" | sudo tee -a $CONF_FILE > /dev/n
 
 # multiple osd on single node needs to set this to 0 (default is 1). ref: http://ceph.com/docs/dumpling/start/quick-ceph-deploy/ Single Node Quick Start
 #sudo echo -e "osd crush chooseleaf type = 0 " | sudo tee -a $CONF_FILE > /dev/null
-sudo echo -e "osd_op_queue=mclock_opclass" | sudo tee -a $CONF_FILE > /dev/null
+sudo echo -e "osd_op_queue=mclock_pool" | sudo tee -a $CONF_FILE > /dev/null
 
 sudo echo -e "mon_allow_pool_delete=true" | sudo tee -a $CONF_FILE > /dev/null
 sudo echo -e "osd_op_num_shards_hdd=1" | sudo tee -a $CONF_FILE > /dev/null

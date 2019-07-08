@@ -27,14 +27,16 @@ cluster_name=ceph
 # Monitor list. You can install multiple monitors on single node, at least 3.
 # Use space, and only space to separate multiple monitors. Don't omit double quotes.
 mon_list="BJ-IDC1-10-10-30-143"  # The name of each monitor
-mon_ip_list="10.10.30.143"
+
+# mon_ip_list="10.10.30.143"
+mon_ip_list="127.0.0.1"
 mon_port_list="6790 6791 6792"
 
 # How many OSDs you want to install on all-in-one host
 #osd_count=3
 
 # Seems have no big effect on all-in-one condition
-public_network=10.10.120.0/24
+public_network=10.10.120.143/24
 
 osd_op_queue=wpq
 mon_allow_pool_delete=true
