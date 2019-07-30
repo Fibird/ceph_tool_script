@@ -62,7 +62,6 @@ for bs in ${block_size_list[@]}; do
                 for file in $(ls $result_file_name*); do
                     ((iops += $(grep "Average IOPS" $file | awk '{print $3}')))
                 done
-                iops=$(echo "$iops / $rados_process_num" | bc)
                 r_value=${r_list[$i]}
                 w_value=${w_list[$i]}
                 l_value=${l_list[$i]}
