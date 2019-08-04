@@ -44,7 +44,7 @@ for bs in ${block_size_list[@]}; do
                 result_file_name=${BASEDIR}/$result_dir/$bs-$pool_name-$qos_id
                 thread_num_per_process=$(echo "$rados_thread_num / $rados_process_num" | bc)
                 for ((j=0;j<$rados_process_num;j++)); do
-                    rados bench -p $pool_name $time_per_test write -b $bs -t $thread_num_per_process > "$result_file_name"-"$j" &
+                    rados bench -p $pool_name $time_per_test write -b $bs -t $thread_num_per_process --run-name "run_$i-$j" > "$result_file_name"-"$j" &
                     pids[i]=$! 
                 done
                 echo "[INFO]: PID:$!: rados bench writing to "$pool_name"..."

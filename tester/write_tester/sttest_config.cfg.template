@@ -3,7 +3,7 @@ BASEDIR=$(dirname $0)
 
 ##------- osd settings -------## 
 # for creating osds
-disk_list=(/dev/nvme0n1 /dev/nvme1n1 /dev/nvme2n1)
+disk_list=(/dev/sdb /dev/sdc /dev/sdd)
 # for removing osds
 osd_list=(0 1 2 3 4 5)
 
@@ -46,4 +46,4 @@ rados_thread_list_4M=(1600 1800)
 
 ##------- remote setting -------## 
 remote_script_dir=/root/ruc_test/sttest_scripts/
-remote_host_list=(10.10.30.152)
+remote_host_list=(x.x.x.x x.x.x.x)

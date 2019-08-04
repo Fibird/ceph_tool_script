@@ -10,17 +10,14 @@ pg_num_per_pool=32
 result_dir=result_dir
 
 # unit is second
-time_per_test=300
+time_per_test=150
 
-#block_size_list=(1M 4M)
-# block_size_list=(1M 4M)
-block_size_list=(16K)
-rados_thread_num=40
+block_size_list=(1M 4M)
+rados_thread_num=256
 rados_process_num=2
 
 # email config
-info_email=chaoyanglius@outlook.com
+info_email=xxx@xxx.com
 
 # qos config
-# qos_file_name=qos_configs.csv
 qos_file_name=qos_configs.csv
