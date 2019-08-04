@@ -27,3 +27,8 @@ result_*/
 
 ### garbage
 *.bk
+tmp*
+
+### real config file
+sttest_config.cfg
+mclock_test.cfg
