@@ -1,0 +1,10 @@
+[write-16K]
+description="write test with block size of 16K"
+ioengine=rbd
+clientname=admin
+pool=test0
+rbdname=rbd0
+iodepth=32
+runtime=120
+rw=write #write 表示顺序写，randwrite 表示随机写，read 表示顺序读，randread 表示随机读
+bs=16K

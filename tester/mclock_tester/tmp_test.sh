@@ -15,14 +15,15 @@ for i in {1..4}; do
     ceph osd pool set test$i qos_lim 0
 done
 
-rados bench -p test0 200 write -b 16K -t 32 > tmp_test_log0_0 --run-name test0_0 &
-rados bench -p test0 200 write -b 16K -t 32 > tmp_test_log0_1 --run-name test0_1 &
-rados bench -p test0 200 write -b 16K -t 32 > tmp_test_log0_2 --run-name test0_2 &
-rados bench -p test0 200 write -b 16K -t 32 > tmp_test_log0_3 --run-name test0_3 &
+#rados bench -p test0 200 write -b 16K -t 1 > tmp_test_log0_0 --run-name test0_0 &
+#rados bench -p test0 200 write -b 16K -t 1 > tmp_test_log0_1 --run-name test0_1 &
+#rados bench -p test0 200 write -b 16K -t 1 > tmp_test_log0_2 --run-name test0_2 &
+#rados bench -p test0 200 write -b 16K -t 32 > tmp_test_log0_3 --run-name test0_3 &
+rados bench -p test0 200 write -b 16K -t 3 > tmp_test_log0_3 --run-name test0 &
 
+#for i in {1..2}; do
 for i in {1..4}; do
-#for i in {0..4}; do
-    rados bench -p test$i 200 write -b 16K -t 128 > tmp_test_log$i --run-name test$i &
+    rados bench -p test$i 200 write -b 16K -t 1 > tmp_test_log$i --run-name test$i &
     #rados bench -p test$i 200 write -b 16K -t 32 > tmp_test_log$i --run-name test$i &
 done
 
