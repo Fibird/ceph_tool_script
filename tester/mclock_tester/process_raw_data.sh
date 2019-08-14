@@ -47,8 +47,8 @@ for bs in ${block_size_list[@]}; do
                 if [[ $rem_sum -gt 0 ]]; then
                     ept_iopses[$i]=$((r_list[$i]+rem_sum*w_list[$i]/wgt_sum))
                     if [[ ${l_list[$i]} -ne 0 && ${ept_iopses[$i]} -gt ${l_list[$i]} ]]; then
-                        ept_iopses[$i]=${l_list[$i]}
                         bonus_iops=$((bonus_iops+ept_iopses[$i]-l_list[$i]))
+                        ept_iopses[$i]=${l_list[$i]}
                     else
                         ((rem_wgt+=w_list[$i]))
                     fi
@@ -59,7 +59,7 @@ for bs in ${block_size_list[@]}; do
             if [[ $bonus_iops -ne 0 ]]; then
                 for ((i=0;i<$pool_num;i++)); do
                     if [[ ${l_list[$i]} -eq 0 || ${ept_iopses[$i]} -lt ${l_list[$i]} ]]; then
-                        ept_iopses[$i]=$((ept_iopses[$i]+bonus_iops*w_list[$i]/rem_wgt[$i]))    
+                        ept_iopses[$i]=$((ept_iopses[$i]+bonus_iops*w_list[$i]/rem_wgt))    
                     fi
                 done
             fi

@@ -15,9 +15,6 @@ declare -a pids
 echo "block size list: ${block_size_list[@]}"
 for bs in ${block_size_list[@]}; do
     line_num=0
-    suffix=$(date +%y%m%d%H%M%S)
-    iops_rst_file=${BASEDIR}/$result_dir/"$bs"_result_iops_"$suffix".csv
-    echo "id,pool,r,w,l,iops" >> $iops_rst_file
     # read qos setting one by one
     cat $BASEDIR/"$bs"_"$qos_file_name" | while read rwl; do
         # jump header line
@@ -60,32 +57,14 @@ for bs in ${block_size_list[@]}; do
                 wait $i
             done
             
-            # process results
-            for ((i=0;i<$pool_num;i++)); do
-                pool_name=$pool_name_prefix$i
-                result_file_name=${BASEDIR}/$result_dir/$bs-$pool_name-$qos_id
-                #iops=$(grep "Average IOPS" $result_file_name | awk '{print $3}')
-                iops=$(grep "write: IOPS=" $result_file_name | awk '{print $2}' | tr -d  'IOPS=,')
-                r_value=${r_list[$i]}
-                w_value=${w_list[$i]}
-                l_value=${l_list[$i]}
-                echo "$qos_id,$pool_name,$r_value,$w_value,$l_value,$iops" >> $iops_rst_file
-            done
             # remove all rbds
             $remove_rbds
             # clean all pools
             $remove_pools
-            #echo -e "Sir,\n\n \t I have finished testing for $bs config $line_num.\n\nTBot\n" | mail -s "mclock test" $info_email
         fi
         ((line_num++))
     done
 done
-
-send_file_name=${BASEDIR}/mclock_test_result_$(date +%y%m%d%H%M%S)
-
-tar -czvf "$send_file_name".tar.gz ${BASEDIR}/$result_dir/*
-echo $info_mail
-echo -e "Sir,\n\n Test complete and please check!\n\nTBot" | mail -s "mclock test" -a "$send_file_name".tar.gz $info_email
 
 exit 0
 

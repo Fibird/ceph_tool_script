@@ -24,10 +24,12 @@ bin/
 ## result files
 *.gz
 result_*/
+fio_result_*/
 
 ### garbage
 *.bk
 tmp*
+*_tmp_*/
 
 ### real config file
 sttest_config.cfg
