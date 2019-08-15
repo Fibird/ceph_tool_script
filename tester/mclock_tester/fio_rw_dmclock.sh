@@ -49,7 +49,7 @@ for bs in ${block_size_list[@]}; do
                 result_file_name=${BASEDIR}/$result_dir/$bs-$pool_name-$qos_id
 #                rados bench -p $pool_name $time_per_test write -b $bs -t $rados_thread_num > $result_file_name &
 #                echo "[INFO]: PID:$!: rados bench writing to "$pool_name"..."
-                fio -ioengine=rbd -clientname=$fio_client_name -pool=$pool_name -rbdname=$rbd_name -iodepth=$fio_iodepth -runtime=$time_per_test -rw=$fio_rw_mode -bs=$bs -numjobs=$fio_numjobs -name="$bs"_write_"$i" > $result_file_name &
+                fio -ioengine=rbd -direct=1 -clientname=$fio_client_name -pool=$pool_name -rbdname=$rbd_name -iodepth=$fio_iodepth -runtime=$time_per_test -rw=$fio_rw_mode -bs=$bs -numjobs=$fio_numjobs -name="$bs"_write_"$i" -log_avg_msec=500 -write_iops_log=write_rbd_$bs_$pool_name_$qos_id > $result_file_name &
                 pids[i]=$! 
             done
             echo "[INFO]: Waiting for test..."
