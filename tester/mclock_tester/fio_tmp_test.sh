@@ -15,4 +15,4 @@ for i in {1..4}; do
     fio -ioengine=rbd -clientname=admin -pool=test$i -rbdname=rbd$i -iodepth=128 -runtime=100 -rw=write -bs=16K -numjobs=1 -name=16K_write_$i > fio_tmp_log$i &
 done
 
-fio -ioengine=rbd -clientname=admin -pool=test0 -rbdname=rbd0 -iodepth=128 -runtime=100 -rw=write -bs=16K -numjobs=2 -name=16K_write_0 > fio_tmp_log0
+fio -ioengine=rbd -clientname=admin -pool=test0 -rbdname=rbd0 -iodepth=128 -runtime=100 -rw=write -bs=16K -numjobs=3 -name=16K_write_0 > fio_tmp_log0
