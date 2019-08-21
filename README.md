@@ -28,7 +28,14 @@ Test toolbox for ceph.
 
 You can use it test ceph pool-unit QoS based dmclock. The implementation of it is [here](https://github.com/bspark8/ceph/tree/wip-pool-unit-dmclock).
 
-- mclock\_test.cfg: configuration file of mclock\_tester.
+- mclock\_test.cfg.template: configuration file of mclock\_tester.
+
+You need to rename it:
+
+```
+mv mclock_test.cfg.template mclock_test.cfg
+```
+
 - dmclock\_test\_script2.sh: dmclock test script
 - xx\_qos\_configs.csv: add test case into this file, eg:
 
@@ -43,7 +50,7 @@ id,r,w,l
 4,500 1000 1500 2000 2500,1 1 1 1 1,0 0 0 0 0
 ```
 
-Just run `dmclock\_test_script2.sh` after modifying mclock\_test.cfg. And suggest opening a tmux window and run this script in it.
+Just run `dmclock\_test_script2.sh` after modifying mclock\_test.cfg and adding test case into xx\_qos\_configs.csv. And suggest opening a tmux window and run this script in it.
 
 ```
 ./dmclock_test_script2.sh
@@ -68,6 +75,7 @@ You can also use these script alone:
 - remove\_pools.sh: to remove pools in batch.
 - remove\_rbds.sh: to remove rbds in batch.
 - fio\_rw\_dmclock.sh: use fio to test dmclock.
+- process\_raw\_data.sh: process iops and compute expect iops
 - send\_dmclock\_test\_result.sh: to send test result to your email.
 - clean\_rados.sh: to kill all rados processes.
 
