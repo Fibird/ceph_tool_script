@@ -20,7 +20,7 @@ for bs in ${block_size_list[@]}; do
             w_list=($(echo $rwl | awk -F ',' '{print $3}'))
             l_list=($(echo $rwl | awk -F ',' '{print $4}'))
 
-            iops_sum=0;  res_sum=0;  wgt_sum=0;  lim_sum=0;  rem_sum=0
+            iops_sum=0;  res_sum=0;  wgt_sum=0;  lim_sum=0
             declare -a iopses
             declare -a ept_iopses
 
@@ -29,7 +29,9 @@ for bs in ${block_size_list[@]}; do
                 pool_name=$pool_name_prefix$i
                 result_file_name=${BASEDIR}/$result_dir/$bs-$pool_name-$qos_id
                 iops=$(grep "write: IOPS=" $result_file_name | awk '{print $2}' | tr -d  'IOPS=,')
-                iopses[$i]=$iops
+                for j in $iops; do
+                    ((iopses[$i]+=j))
+                done
                 r_value=${r_list[$i]}
                 w_value=${w_list[$i]}
                 l_value=${l_list[$i]}
@@ -37,29 +39,33 @@ for bs in ${block_size_list[@]}; do
                 ((res_sum+=r_value))
                 ((wgt_sum+=w_value))
                 ((lim_sum+=l_value))
-                rem_sum=$((iops_sum-res_sum))
                 ept_iopses[$i]=$r_value
             done
 
             # first allocation
-            bonus_iops=0; rem_wgt=0
+            rem_wgt=$wgt_sum
+            rem_iops=$iops_sum
             for ((i=0;i<$pool_num;i++)); do
-                if [[ $rem_sum -gt 0 ]]; then
-                    ept_iopses[$i]=$((r_list[$i]+rem_sum*w_list[$i]/wgt_sum))
-                    if [[ ${l_list[$i]} -ne 0 && ${ept_iopses[$i]} -gt ${l_list[$i]} ]]; then
-                        bonus_iops=$((bonus_iops+ept_iopses[$i]-l_list[$i]))
-                        ept_iopses[$i]=${l_list[$i]}
-                    else
-                        ((rem_wgt+=w_list[$i]))
-                    fi
+                ept_iopses[$i]=0
+                wgt_iops=$((iops_sum*w_list[$i]/wgt_sum))
+                if [[ $res_sum -gt $iops_sum ]]; then
+                    ept_iopses[$i]=$((iops_sum*r_list[$i]/res_sum))
+                elif [[ $wgt_iops -lt ${r_list[$i]} ]]; then
+                    ept_iopses[$i]=${r_list[$i]} 
+                    ((rem_wgt-=w_list[$i]))
+                    ((rem_iops-=ept_iopses[$i]))
+                elif [[ ${l_list[$i]} -ne 0 && $wgt_iops -gt ${l_list[$i]} ]]; then
+                    ept_iopses[$i]=${l_list[$i]}    
+                    ((rem_wgt-=w_list[$i]))
+                    ((rem_iops-=ept_iopses[$i]))
                 fi
             done
 
-            # allocate remain iops after first allocation
-            if [[ $bonus_iops -ne 0 ]]; then
+            # second allocation
+            if [[ $rem_wgt -gt 0 ]]; then
                 for ((i=0;i<$pool_num;i++)); do
-                    if [[ ${l_list[$i]} -eq 0 || ${ept_iopses[$i]} -lt ${l_list[$i]} ]]; then
-                        ept_iopses[$i]=$((ept_iopses[$i]+bonus_iops*w_list[$i]/rem_wgt))    
+                    if [[ ${ept_iopses[$i]} -eq 0 ]]; then
+                        ept_iopses[$i]=$((rem_iops*w_list[$i]/rem_wgt))
                     fi
                 done
             fi
