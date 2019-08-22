@@ -3,7 +3,7 @@
 BASEDIR=$(dirname $0)
 . ${BASEDIR}/mclock_test.cfg
 
-echo "block size list: ${block_size_list[@]}"
+#echo "block size list: ${block_size_list[@]}"
 for bs in ${block_size_list[@]}; do
     line_num=0
     suffix=$(date +%y%m%d%H%M%S)
@@ -26,6 +26,7 @@ for bs in ${block_size_list[@]}; do
 
             # process results
             for ((i=0;i<$pool_num;i++)); do
+                iopses[$i]=0
                 pool_name=$pool_name_prefix$i
                 result_file_name=${BASEDIR}/$result_dir/$bs-$pool_name-$qos_id
                 iops=$(grep "write: IOPS=" $result_file_name | awk '{print $2}' | tr -d  'IOPS=,')
@@ -35,7 +36,7 @@ for bs in ${block_size_list[@]}; do
                 r_value=${r_list[$i]}
                 w_value=${w_list[$i]}
                 l_value=${l_list[$i]}
-                ((iops_sum+=iops))
+                ((iops_sum+=iopses[$i]))
                 ((res_sum+=r_value))
                 ((wgt_sum+=w_value))
                 ((lim_sum+=l_value))
@@ -50,6 +51,7 @@ for bs in ${block_size_list[@]}; do
                 wgt_iops=$((iops_sum*w_list[$i]/wgt_sum))
                 if [[ $res_sum -gt $iops_sum ]]; then
                     ept_iopses[$i]=$((iops_sum*r_list[$i]/res_sum))
+                    rem_wgt=0   # not do second allocation
                 elif [[ $wgt_iops -lt ${r_list[$i]} ]]; then
                     ept_iopses[$i]=${r_list[$i]} 
                     ((rem_wgt-=w_list[$i]))
@@ -86,6 +88,7 @@ for bs in ${block_size_list[@]}; do
     done
 done
 
+echo "process result written to $iops_rst_file"
 #send_file_name=${BASEDIR}/mclock_test_result_$(date +%y%m%d%H%M%S)
 
 #tar -czvf "$send_file_name".tar.gz ${BASEDIR}/$result_dir/*
