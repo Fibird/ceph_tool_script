@@ -49,20 +49,6 @@ for bs in ${block_size_list[@]}; do
             for i in ${pids[@]}; do 
                 wait $i
             done
-            
-            # process results
-            for ((i=0;i<$pool_num;i++)); do
-                pool_name=$pool_name_prefix$i
-                result_file_name=${BASEDIR}/$result_dir/$bs-$pool_name-$qos_id
-                iops=$(grep "Average IOPS" $result_file_name | awk '{print $3}')
-                r_value=${r_list[$i]}
-                w_value=${w_list[$i]}
-                l_value=${l_list[$i]}
-                echo "$qos_id,$pool_name,$r_value,$w_value,$l_value,$iops" >> $iops_rst_file
-            done
-            # clean all pools
-            $remove_pools
-            echo -e "Sir,\n\n \t I have finished testing for $bs config $line_num.\n\nTBot\n" | mail -s "mclock test" $info_email
         fi
         ((line_num++))
     done
