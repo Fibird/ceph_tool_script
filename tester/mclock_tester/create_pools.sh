@@ -10,6 +10,7 @@ for i in $(seq 0 $((pool_num-1))); do
         echo "[ERROR]: Create pool $pool_name failed!"
         exit -1
     fi
+    ceph osd pool set $pool_name size $pool_size
     ceph osd pool application enable $pool_name freeform 
 done
 

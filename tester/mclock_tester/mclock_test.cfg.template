@@ -5,6 +5,7 @@ BASEDIR=$(dirname $0)
 pool_num=5
 pool_name_prefix=test
 pg_num_per_pool=32
+pool_size=2
 
 ##------- test settings -------## 
 result_dir=result_dir
@@ -21,3 +22,11 @@ info_email=xxx@xxx.com
 
 # qos config
 qos_file_name=qos_configs.csv
+
+# fio config
+rbd_size=256G
+rbd_name_prefix=rbd
+fio_iodepth=128 # suggested using 16
+fio_rw_mode=write # just test 'write' mode currently
+fio_client_name=admin # default client
+fio_numjobs=4
