@@ -6,17 +6,13 @@ ceph script toolbox to help develop, operate and test ceph easily.
 
 Ceph deploying toolbox.
 
-- deploy\_on\_single\_node.sh: help you deploy ceph on a single host from yum source.
-- install\_build\_ceph.sh: help you deploy ceph on a single host from source code.
-- add\_blue\_osd.sh: add bluestore osd.
-- add\_mgr.sh: add mgr into cluster.
-- add\_osd.sh: add filestore osd.
-
-... ...
+You can use these scripts to deploy ceph from online/offline rpms and source code, init your ceph cluster, add necessary components and so on. The name of script can tell you what is it and you can use it without any tutorial.
 
 ## operater
 
-... ...
+Ceph operating toolbox.
+
+You can use these scripts to create pools in batch, create rbs in batch and so on.
 
 ## tester
 
@@ -36,7 +32,8 @@ You need to rename it:
 mv mclock_test.cfg.template mclock_test.cfg
 ```
 
-- dmclock\_test\_script2.sh: dmclock test script
+- rb\_tester.sh: using rados bench to test pool-unit dmclock 
+- fio\_tester.sh: using fio to test pool-unit dmclock
 - xx\_qos\_configs.csv: add test case into this file, eg:
 
 16K\_qos\_configs.csv:
@@ -50,11 +47,7 @@ id,r,w,l
 4,500 1000 1500 2000 2500,1 1 1 1 1,0 0 0 0 0
 ```
 
-Just run `dmclock\_test_script2.sh` after modifying mclock\_test.cfg and adding test case into xx\_qos\_configs.csv. And suggest opening a tmux window and run this script in it.
-
-```
-./dmclock_test_script2.sh
-```
+Just run `rb_tester.sh` or `fio_tester.sh` after modifying mclock\_test.cfg and adding test case into xx\_qos\_configs.csv. And suggest opening a tmux window and run this script in it.
 
 2. Get results and graphes
 

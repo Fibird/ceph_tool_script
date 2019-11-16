@@ -11,9 +11,10 @@ then
     exit 1
 fi
 
-public_network=$(ip -o -f inet addr show | awk '/scope global noprefixroute/ {print $4}')
+#public_network=$(ip -o -f inet addr show | awk '/scope global noprefixroute/ {print $4}')
 node_name=$(hostname)
 ipadd=$(ip route get 8.8.8.8 | awk '/8.8.8.8/ {print $NF}')
+public_network=$(ip route get 8.8.8.8 | awk '/8.8.8.8/ {print $NF}')/24
 
 # backup hosts file
 cur_time=`date +"%Y-%m-%d-%H-%M-%S"`
